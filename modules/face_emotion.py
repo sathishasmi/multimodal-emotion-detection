@@ -5,7 +5,7 @@ from PIL import Image
 from modules.model import EmotionCNN
 
 # Emotion labels
-emotion_labels = ['angry', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise']
+emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
 
 # Device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -21,6 +21,10 @@ def load_model():
 transform = transforms.Compose([
     transforms.Grayscale(),
     transforms.Resize((48, 48)),
+
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomRotation(10),
+
     transforms.ToTensor(),
     transforms.Normalize((0.5,), (0.5,))
 ])
