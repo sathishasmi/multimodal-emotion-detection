@@ -13,7 +13,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load model
 model = models.resnet18()
-model.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
 model.fc = nn.Linear(model.fc.in_features, 7)
 
 model.load_state_dict(torch.load("models/face_emotion_model.pth", map_location=device))
@@ -22,10 +21,14 @@ model.eval()
 
 # Transform
 transform = transforms.Compose([
-    transforms.Grayscale(),
-    transforms.Resize((48, 48)),
+    transforms.Resize((224, 224)),
+    transforms.Lambda(lambda img: img.convert("RGB")),  
+
     transforms.ToTensor(),
-    transforms.Normalize((0.5,), (0.5,))
+    transforms.Normalize(
+        [0.485, 0.456, 0.406],
+        [0.229, 0.224, 0.225]
+    )
 ])
 
 # Face detector
